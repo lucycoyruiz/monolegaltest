@@ -1,0 +1,7 @@
+<Solution>
+  <Project Path="Monolegal.Api/Monolegal.Api.csproj" />
+  <Project Path="Monolegal.Application/Monolegal.Application.csproj" Id="9a5a4fa6-7af8-4f8f-bacd-dbb8ca4ed0ff" />
+  <Project Path="Monolegal.Domain/Monolegal.Domain.csproj" Id="872869b3-9560-4558-97bf-faeca13ed3a9" />
+  <Project Path="Monolegal.Infrastructure/Monolegal.Infrastructure.csproj" Id="8fcc46bd-815a-415f-8bd2-ffc6d2ddc79a" />
+  <Project Path="Monolegal.Tests/Monolegal.Tests.csproj" Id="cf2b5e1f-e0cd-40d7-bfe2-03e75856723c" />
+</Solution>

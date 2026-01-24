@@ -1,0 +1,6 @@
+@Monolegal.Api_HostAddress = http://localhost:5049
+
+GET {{Monolegal.Api_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
