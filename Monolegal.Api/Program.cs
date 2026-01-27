@@ -8,7 +8,6 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
 
-// 🔹 Swagger SIMPLE (sin Models)
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 

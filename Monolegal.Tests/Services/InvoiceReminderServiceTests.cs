@@ -1,39 +1,51 @@
 ﻿using Xunit;
+using Moq;
 using Monolegal.Application.Services;
 using Monolegal.Application.Interfaces;
 using Monolegal.Domain.Entities;
-using Monolegal.Tests.Fakes;
-using System;
-using Xunit;
-
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 public class InvoiceReminderServiceTests
 {
     [Fact]
-    public void SendReminders_WhenInvoiceIsExpired_ShouldSendEmail()
+    public async Task ProcessAsync_WhenInvoiceIsPrimerRecordatorio_ShouldSendEmailAndUpdateStatus()
     {
-        // ARRANGE
-        var expiredInvoice = new Invoice
+        // Arrange
+        var invoice = new Invoice
         {
-            Id = Guid.NewGuid(),
-            DueDate = DateTime.UtcNow.AddDays(-3),
-            ClientEmail = "cliente@test.com"
+            Id = "1",
+            Number = "FAC-001",
+            Status = "primerrecordatorio"
         };
 
-        var repository = new FakeInvoiceRepository(new List<Invoice>
-        {
-            expiredInvoice
-        });
+        var repositoryMock = new Mock<IInvoiceRepository>();
+        repositoryMock
+            .Setup(r => r.GetByStatusAsync("primerrecordatorio"))
+            .ReturnsAsync(new List<Invoice> { invoice });
 
-        var emailService = new FakeEmailService();
+        repositoryMock
+            .Setup(r => r.GetByStatusAsync("segundorecordatorio"))
+            .ReturnsAsync(new List<Invoice>());
 
-        var service = new InvoiceReminderService(repository, emailService);
+        var emailMock = new Mock<IEmailService>();
 
-        // ACT
-        service.SendReminders();
+        var service = new InvoiceReminderService(
+            repositoryMock.Object,
+            emailMock.Object);
 
-        // ASSERT
-        Assert.True(emailService.EmailWasSent);
+        // Act
+        await service.ProcessAsync();
+
+        // Assert
+        emailMock.Verify(
+            e => e.SendAsync(invoice, "segundorecordatorio"),
+            Times.Once);
+
+        repositoryMock.Verify(
+            r => r.UpdateAsync(It.Is<Invoice>(i => i.Status == "segundorecordatorio")),
+            Times.Once);
     }
+
+
 }
